@@ -5,7 +5,7 @@ import itertools
 import numpy as np
 
 from lmatools.multiples_nc import centers_to_edges
-import pupynere as nc
+import netCDF4 as nc
         
 class LMAgridFileCollection(object):
     def __init__(self, filenames, grid_name, 
@@ -50,8 +50,9 @@ class LMAgridFileCollection(object):
         """
         fname, i = self._time_lookup[t0]  #i is the frame id for this time in NetCDFFile f
         
-        f = nc.NetCDFFile(fname)
-        
+        #f = nc.NetCDFFile(fname)
+        f = nc.Dataset(fname)
+
         data = f.variables  # dictionary of variable names to nc_var objects
         dims = f.dimensions # dictionary of dimension names to sizes
         x = data[self.x_name]
@@ -83,7 +84,8 @@ class LMAgridFileCollection(object):
         """ Called once by init to set up frame lookup tables and yield 
             the frame start times. _frame_lookup goes from 
             datetime->(nc file, frame index)"""
-        f = nc.NetCDFFile(fname)
+        #f = nc.NetCDFFile(fname)
+        f = nc.Dataset(fname)
 
         data = f.variables  # dictionary of variable names to nc_var objects
         dims = f.dimensions # dictionary of dimension names to sizes
@@ -105,7 +107,8 @@ class LMAgridFileCollection(object):
         from lmatools.coordinateSystems import GeographicSystem, MapProjection
         geosys = GeographicSystem()
         
-        f = nc.NetCDFFile(self._filenames[0])
+        #f = nc.NetCDFFile(self._filenames[0])
+        f = nc.Dataset(self._filenames[0])
         
         # Surely someone has written an automated library to parse coordinate 
         # reference data from CF-compliant files.
